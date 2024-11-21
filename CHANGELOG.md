@@ -1,4 +1,10 @@
-﻿## 0.5.0
+﻿## 0.5.1
+
+-  Updated dependency `webview_flutter` to `^4.10.0`
+    - Although there was a breaking change in `webview_flutter`, the API surface of `webviewx_plus`
+      does not change in a breaking way.
+
+## 0.5.0
 
 -  Migrates to ui_web APIs.
 -  Set min sdk to 3.0.0.
@@ -11,11 +17,6 @@
 ## 0.4.0
 
 -  Updated dependencies
-
-
-## 0.3.3
-
--  Updated dependency `webview_flutter` to `^4.0.0`
 
 ##  0.3.2
 
