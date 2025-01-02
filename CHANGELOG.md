@@ -1,8 +1,12 @@
-﻿## 0.5.1
+## 0.6.0
+- Migrate to "web" and "dart:js_interop" for WASM support
+- Set min sdk to 3.4.0.
+
+## 0.5.1
 
 -  Updated dependency `webview_flutter` to `^4.10.0`
-    - Although there was a breaking change in `webview_flutter`, the API surface of `webviewx_plus`
-      does not change in a breaking way.
+   - Although there was a breaking change in `webview_flutter`, the API surface of `webviewx_plus`
+     does not change in a breaking way.
 
 ## 0.5.0
 
