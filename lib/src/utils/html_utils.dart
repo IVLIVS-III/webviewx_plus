@@ -273,7 +273,7 @@ class HtmlUtils {
           var returnedObject = JSON.stringify({method: 'get', href: document.activeElement.href});
           frameElement.contentWindow.$webOnClickInsideIframeCallback && frameElement.contentWindow.$webOnClickInsideIframeCallback(returnedObject)
         }
-      })
+      }, true)
       document.addEventListener('submit', e => {
         if (frameElement && document.activeElement && document.activeElement.form && document.activeElement.form.action) {
           e.preventDefault()
@@ -290,7 +290,7 @@ class HtmlUtils {
             frameElement.contentWindow.$webOnClickInsideIframeCallback && frameElement.contentWindow.$webOnClickInsideIframeCallback(returnedObject)
           }
         }
-      })
+      }, true)
       </script>
       ''',
       position: EmbedPosition.belowHeadOpenTag,

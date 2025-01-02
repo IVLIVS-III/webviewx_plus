@@ -45,7 +45,7 @@ class WebViewX extends StatefulWidget implements view_interface.WebViewX {
   /// being created.
   @override
   final Function(ctrl_interface.WebViewXController controller)?
-      onWebViewCreated;
+  onWebViewCreated;
 
   /// A set of [EmbeddedJsContent].
   ///
@@ -205,7 +205,7 @@ class _WebViewXState extends State<WebViewX> {
 
       jsWindowObject.setProperty(
         webOnClickInsideIframeCallback.toJS,
-        (String onClickCallbackObject) {
+            (String onClickCallbackObject) {
           _handleOnIframeClick(onClickCallbackObject);
         }.toJS,
       );
@@ -220,7 +220,7 @@ class _WebViewXState extends State<WebViewX> {
     _callOnPageStartedCallback(webViewXController.value.source);
 
     iframeOnLoadSubscription = iframe.onLoad.listen((event) {
-      _debugLog('IFrame $iframeViewType has been loaded.');
+      _connectJsToFlutter(then: _callOnWebViewCreatedCallback);
 
       _callOnPageFinishedCallback(webViewXController.value.source);
     });
@@ -295,14 +295,15 @@ class _WebViewXState extends State<WebViewX> {
       ..allowFullscreen = widget.webSpecificParams.webAllowFullscreenContent;
 
     widget.webSpecificParams.additionalSandboxOptions.forEach(
-      (element) => iframeElement.sandbox.add(element),
+          (element) => iframeElement.sandbox.add(element),
     );
 
     if (widget.javascriptMode == JavascriptMode.unrestricted) {
       iframeElement.sandbox.add('allow-scripts');
     }
 
-    final allow = widget.webSpecificParams.additionalAllowOptions;
+    final allow = List<String>.from(
+        widget.webSpecificParams.additionalAllowOptions);
 
     if (widget.initialMediaPlaybackPolicy ==
         AutoMediaPlaybackPolicy.alwaysAllow) {
@@ -330,10 +331,8 @@ class _WebViewXState extends State<WebViewX> {
     });
   }
 
-  Future<bool> _checkNavigationAllowed(
-    String pageSource,
-    SourceType sourceType,
-  ) async {
+  Future<bool> _checkNavigationAllowed(String pageSource,
+      SourceType sourceType,) async {
     if (widget.navigationDelegate == null) {
       return true;
     }
@@ -359,22 +358,26 @@ class _WebViewXState extends State<WebViewX> {
 
     switch (model.sourceType) {
       case SourceType.html:
-        iframe.srcdoc = HtmlUtils.preprocessSource(
+        iframe.srcdoc = HtmlUtils
+            .preprocessSource(
           source,
           jsContent: widget.jsContent,
           windowDisambiguator: iframeViewType,
           forWeb: true,
-        ).toJS;
+        )
+            .toJS;
         break;
       case SourceType.url:
       case SourceType.urlBypass:
         if (source == 'about:blank') {
-          iframe.srcdoc = HtmlUtils.preprocessSource(
+          iframe.srcdoc = HtmlUtils
+              .preprocessSource(
             '<br>',
             jsContent: widget.jsContent,
             windowDisambiguator: iframeViewType,
             forWeb: true,
-          ).toJS;
+          )
+              .toJS;
           break;
         }
 
@@ -427,14 +430,16 @@ class _WebViewXState extends State<WebViewX> {
 
     final bodyMap = body == null
         ? null
-        : (<String, String>{}..addEntries(
-            (body as List<dynamic>).map(
-              (e) => MapEntry<String, String>(
+        : (<String, String>{}
+      ..addEntries(
+        (body as List<dynamic>).map(
+              (e) =>
+              MapEntry<String, String>(
                 e[0].toString(),
                 e[1].toString(),
               ),
-            ),
-          ));
+        ),
+      ));
 
     _tryFetchRemoteSource(
       method: method,
@@ -471,7 +476,9 @@ class _WebViewXState extends State<WebViewX> {
         description: 'Failed to fetch the page at $url\nError:\n$e\n',
         errorCode: WebResourceErrorType.connect.index,
         errorType: WebResourceErrorType.connect,
-        domain: Uri.parse(url).authority,
+        domain: Uri
+            .parse(url)
+            .authority,
         failingUrl: url,
       ));
       _debugLog('Failed to fetch the page at $url\nError:\n$e\n');
@@ -489,7 +496,7 @@ class _WebViewXState extends State<WebViewX> {
     if (widget.userAgent != null) {
       (headers ??= <String, String>{}).putIfAbsent(
         userAgentHeadersKey,
-        () => widget.userAgent!,
+            () => widget.userAgent!,
       );
     }
 
@@ -528,12 +535,15 @@ class _WebViewXState extends State<WebViewX> {
       pageSource,
     );
 
-    iframe.srcdoc = HtmlUtils.preprocessSource(
+    iframe.srcdoc = HtmlUtils
+        .preprocessSource(
       replacedPageSource,
       jsContent: widget.jsContent,
       windowDisambiguator: iframeViewType,
       forWeb: true,
-    ).toJS;
+    )
+        .toJS;
+    _connectJsToFlutter();
   }
 
   void _debugLog(String text) {
